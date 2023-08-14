@@ -11,22 +11,83 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useState, useEffect } from "react";
 
-export default function ItemCard({item}) {
+ const CardContainer= styled(Card)(({ theme }) =>({
+    width:"21%",
+    margin: "1rem",
+    marginBottom: "2rem",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    borderRadius: "14px",
+    [theme.breakpoints.down("sm")]: {
+      width:"90%"
+    },
+ }));
+
+ const Content = styled(CardContent) ({
+    minHeight: "11rem",
+  })
+
+const ItemCard = ({ item}) => {
+  
+
+  const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  
   return (
-    <Card>
+      <CardContainer>
         <CardMedia
-        component="img"
-        height="140"
-        image={item.image}
-        alt={item.title}/>
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                    {item.title}
-                </Typography>
-            </CardContent>
-        
+          component="img"
+          height="250"
+          image={item.image}
+          alt="image"
+        />
+        <Content >
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            style={{ height: "4rem" }}
+          >
+            {item.title}
+          </Typography>
 
-    </Card>
-  )
-}
+          <Accordion
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1bh-content"
+              id="panel1bh-header"
+            >
+              <Typography sx={{ width: "100%", flexShrink: 0 }}>
+                Description
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="body2" color="text.secondary">
+                {item.about}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Divider />
+          <Typography component="legend">User Rating</Typography>
+          <Rating name="simple-controlled" value={item.rate} readOnly />
+          <Divider />
+          <Typography variant="h4">${item.price}</Typography>
+          <CardActions>
+          <Button variant="contained">
+            ADD TO CART
+          </Button>
+        </CardActions>
+        </Content>
+      </CardContainer>
+  );
+};
+
+export default ItemCard;
